@@ -28,12 +28,8 @@ HTObject allows a developer to take the NSDictionary response and quickly wrap i
 3.  The objects can enforce types.  So as long as your code can handle properties with nil values, the web endpoint can switch types and the worst is that a value may no longer be shown.
 4.  The property names are used a keys, eliminating the need for declaring string constants.
 
-The key to this is using the _cmd variable, which is a hidden instance variable inside every Objective-C method's context.  In the case of properties, _cmd will be the name of the property, which is then used as a key into the object's dictionary.
-
 How to use it
 ========
-
-
 
 ```
 // declare a subclass of HTObject
@@ -49,6 +45,8 @@ How to use it
 }
 ```
 
+Checkout SampleObject.h and SampleObject.m to see how to declare a read-only object.  Checkout MutableSampleObject if you want to see how to declare an object that allows readwrite properties.
+
 How to install it
 ========
 
@@ -60,4 +58,13 @@ Or, if you want to be fancy, you can install from Cocoapods by adding the line:
 pod 'HTObject' 
 ```
 
+How does it work?
+========
+
+The trick is to use the _cmd variable, which is a hidden instance variable inside every Objective-C method's context.  When a property is synthesized, the compiler creates a method of the same name as the property.  You can override that method with your own version, and so HTObject adds some convenience methods to use the _cmd variable as the key to the object's internal dictionary.
+
+```
+IMPORTANT: Note that if you specify the getter in the property declaration, that will be
+the name of the getter method.  So, custom getters may not work with HTObject.
+```
 
