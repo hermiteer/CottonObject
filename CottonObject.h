@@ -1,5 +1,5 @@
 //******************************************************************************
-//  HTObject - a thin wrapper around NSDictionary to make life better with
+//  CottonObject - a thin wrapper around NSDictionary to make life better with
 //  JSON (and other) network objects.  For more details, checkout the github
 //  for this project http://github.com/hermiteer/HTObject
 //
@@ -42,7 +42,7 @@
 
 //------------------------------------------------------------------------------
 
-@interface HTObject : NSObject <NSCoding>
+@interface CottonObject : NSObject <NSCoding>
 
 //------------------------------------------------------------------------------
 

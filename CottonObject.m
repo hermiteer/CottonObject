@@ -34,12 +34,12 @@
 
 //------------------------------------------------------------------------------
 
-#import "HTObject.h"
+#import "CottonObject.h"
 #import <objc/runtime.h>
 
 //------------------------------------------------------------------------------
 
-@interface HTObject()
+@interface CottonObject()
 
 // internally the dictionary is mutable
 // but publically exposed as readonly
@@ -54,7 +54,7 @@
 
 //------------------------------------------------------------------------------
 
-@implementation HTObject
+@implementation CottonObject
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +104,7 @@
 {
     // this only supports making arrays of HTObject subclasses
     // this is what allows parent-child HTObject classes to be instanced
-    ZAssert([aClass isMemberOfClass:HTObject.class],
+    ZAssert([aClass isMemberOfClass:CottonObject.class],
             @"Class '%@' must be a subclass of HTObject",
             NSStringFromClass(aClass));
 
@@ -153,7 +153,7 @@
     }
     
     // create the array and backfill into the parent dictionary
-    NSArray* classedArray = [HTObject arrayFromArray:array withClass:objectClass];
+    NSArray* classedArray = [CottonObject arrayFromArray:array withClass:objectClass];
     return classedArray;
 }
 

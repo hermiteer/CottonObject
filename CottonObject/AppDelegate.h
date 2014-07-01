@@ -28,54 +28,15 @@
 //  THE SOFTWARE.
 //******************************************************************************
 
-#import "HTAppDelegate.h"
-#import "SampleObject.h"
+#import <UIKit/UIKit.h>
 
 //------------------------------------------------------------------------------
 
-@implementation HTAppDelegate
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 //------------------------------------------------------------------------------
 
-- (BOOL) application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)options
-{
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
-    [self runObjectTests];
-    return YES;
-}
-
-//------------------------------------------------------------------------------
-
-- (void) runObjectTests
-{
-    // create the object from a plist
-    // this is an example of how to fake data while developing
-    // the JSON blob from a web endpoint gets turned into an NSDictionary
-    // so it's easy to see how a response block can return your
-    // strongly typed HTObject subclass
-    NSURL* url = [[NSBundle mainBundle] URLForResource:@"SampleObject" withExtension:@"plist"];
-    NSDictionary* dictionary = [NSDictionary dictionaryWithContentsOfURL:url];
-    SampleObject* object = [[SampleObject alloc] initWithDictionary:dictionary];
-
-    // accessing values using dot notation
-    NSLog(@"sampleObject.name = %@", object.name);
-    NSLog(@"sampleObject.type = %@", object.type.stringValue);
-
-    // setting values using dot notation
-    object.title = @"SOME TITLE";
-
-    // dump the whole object
-    NSLog(@"Sample Object %@", object.description);
-    NSLog(@"Child Object %@", object.childObject.description);
-
-    // validate the object
-    // use this in unit tests to make sure the client and
-    // the endpoint are in step
-    BOOL matches = [object dictionaryMatchesDeclaredProperties];
-    NSLog(@"Does this object's dictionary matches the declared properties %@", (matches ? @"YES" : @"NO"));
-}
+@property (nonatomic, strong) UIWindow* window;
 
 //------------------------------------------------------------------------------
 
