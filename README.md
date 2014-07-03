@@ -41,22 +41,92 @@ How to use it
 // implement the getter in the .m
 - (NSString*) name
 {
-  return self.dictionary[NSStringFromSelector(_cmd)];
+  return [self stringForGetter:_cmd];
 }
 ```
 
-Checkout SampleObject.h and SampleObject.m to see how to declare a read-only object.  Checkout MutableSampleObject if you want to see how to declare an object that allows readwrite properties.
+If the internal dictionary has, for some reason, a different name for the value than the property name, you can use a string as the key.  This is helpful to correct inconsistencies between the client and server API.
+
+```
+// declare the property in the .h
+@property (nonatomic, readonly) NSString* myName;
+
+// implement the getter in the .m
+- (NSString*) name
+{
+  return [self stringForKey:@"my_name"];
+}
+```
+
+If a property is an NSDictionary (i.e. a dictionary with dictionary values), you can establish parent-child CottonObject hierarchies.
+
+```
+// declare the child object
+@interface Child : CottonObject
+...
+@end
+
+// declare the parent object with the Child property
+@interface Parent : CottonObject
+
+@property (nonatomic, readonly) Child* child;
+
+@end
+
+// implement a getter for the Child
+- (Child*) child
+{
+  return [self objectWithClass:Child.class forKey:NSStringFromSelector(_cmd)];
+}
+```
+
+But what about read-write properties?  Well, CottonObject can help you there too.
+
+```
+// declare a read-write property
+@property (nonatomic, copy) NSString* name;
+
+// implement getter
+- (NSString*) name
+{
+  return [self stringForGetter:_cmd];
+}
+
+// implement setter
+- (void) setName:(NSString*)name
+{
+  [self setObject:name withSetter:_cmd];
+}
+```
+
+Remember that the internal NSDictionary only supports NSObject instances, so if your property is a primitive, you'll need to transform it in the setter.
+
+```
+// declare a primitive read-write property
+@property (nonatomic) NSUInteger count;
+
+// implementer getter
+- (NSUInteger) count
+{
+  return [self unsignedIntegerForGetter:_cmd];
+}
+
+// implement setter
+- (void) setCount:(NSUInteger)count
+{
+  NSNumber* countNumber = @(count);
+  [self setObject:countNumber withSetter:_cmd];
+}
+```
+
+Checkout the CottonObject sample Xcode project.  It has a SampleObject that is created from a plist dictionary and shows how to declare, implement and use the SampleObject.
 
 How to install it
 ========
 
 Simply download CottonObject.h and CottonObject.c, then add to your project.  CottonObject uses ARC, so if your project does not, follow these instructions http://www.codeography.com/2011/10/10/making-arc-and-non-arc-play-nice.html.
 
-Or, if you want to be fancy, you can install from Cocoapods by adding the line:
-
-```
-pod 'CottonObject' 
-```
+Support for Cocoapods is coming soon!
 
 How does it work?
 ========
@@ -65,6 +135,7 @@ The trick is to use the _cmd variable, which is a hidden instance variable insid
 
 ```
 IMPORTANT: Note that if you specify the getter in the property declaration, that will be
-the name of the getter method.  So, custom getters may not work with CottonObject.
+the name of the getter method.  In this case, you can use the xxxForKey flavor methods and
+re-map the value in the dictionary.
 ```
 
