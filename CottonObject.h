@@ -1,7 +1,7 @@
 //******************************************************************************
 //  CottonObject - a thin wrapper around NSDictionary to make life better with
 //  JSON (and other) network objects.  For more details, checkout the github
-//  for this project http://github.com/hermiteer/HTObject
+//  for this project http://github.com/hermiteer/CottonObject
 //
 //  Created by Christoph on 6/22/14.
 //
@@ -32,9 +32,7 @@
 
 //------------------------------------------------------------------------------
 
-// TODO
-// explain that this is provided as a convenience to help formalize objects
-// and make the easier for clients to understand
+// 
 #define NSArrayOfNSNumber NSArray
 #define NSArrayOfNSString NSArray
 #define NSArrayOfSelector NSArray
@@ -51,42 +49,53 @@
 //------------------------------------------------------------------------------
 
 - (id) initWithDictionary:(NSDictionary*)dictionary;
+- (BOOL) dictionaryMatchesDeclaredProperties;
 
 //------------------------------------------------------------------------------
-
-// TODO
-// clean up
-// make note about how the converted value is updated in the dictionary
-// so the next call will not do the same work again
-- (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key;
-- (id) objectWithClass:(Class)objectClass forKey:(NSString*)key;
-
-// TODO
-// make a version of objectForKey that takes an SEL and does the
-// selector to string conversion to save on typing for property implementations
-- (void) setObject:(id)object withSetter:(SEL)setter;
-
-//------------------------------------------------------------------------------
-
-- (NSNumber*) numberForKey:(NSString*)key;
-- (SEL) selectorForKey:(NSString*)key;
-- (NSString*) stringForKey:(NSString*)key;
-- (NSURL*) urlForKey:(NSString*)key;
-
+#pragma mark Getters by NSString key
 //------------------------------------------------------------------------------
 
 - (BOOL) boolForKey:(NSString*)key;
 - (CGFloat) floatForKey:(NSString*)key;
 - (NSInteger) integerForKey:(NSString*)key;
+- (NSNumber*) numberForKey:(NSString*)key;
+- (SEL) selectorForKey:(NSString*)key;
+- (NSString*) stringForKey:(NSString*)key;
+- (NSURL*) urlForKey:(NSString*)key;
 - (NSUInteger) unsignedIntegerForKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
+#pragma mark Getters by SEL
+//------------------------------------------------------------------------------
 
-- (BOOL) dictionaryMatchesDeclaredProperties;
+// TODO christoph
+// need to implement this, just running out of time
+/*
+- (BOOL) boolForGetter:(SEL)getter;
+- (CGFloat) floatForGetter:(SEL)getter;
+- (NSInteger) integerForGetter:(SEL)getter;
+- (NSNumber*) numberForGetter:(SEL)getter;
+- (SEL) selectorForGetter:(SEL)getter;
+- (NSString*) stringForGetter:(SEL)getter;
+- (NSURL*) urlForGetter:(SEL)getter;
+- (NSUInteger) unsignedIntegerForGetter:(SEL)getter;
+*/
 
+//------------------------------------------------------------------------------
+#pragma mark - Factory methods for child CottonObjects
 //------------------------------------------------------------------------------
 
 + (NSArray*) arrayFromArray:(NSArray*)array withClass:(Class)aClass;
+- (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key;
+- (id) objectWithClass:(Class)objectClass forKey:(NSString*)key;
+
+//------------------------------------------------------------------------------
+#pragma mark - Setters by NSString key
+//------------------------------------------------------------------------------
+
+// TODO christoph
+// need to add setters for the supported types
+- (void) setObject:(id)object withSetter:(SEL)setter;
 
 //------------------------------------------------------------------------------
 

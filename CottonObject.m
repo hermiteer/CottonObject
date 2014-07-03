@@ -1,7 +1,7 @@
 //******************************************************************************
-//  HTObject - a thin wrapper around NSDictionary to make life better with
+//  CottonObject - a thin wrapper around NSDictionary to make life better with
 //  JSON (and other) network objects.  For more details, checkout the github
-//  for this project http://github.com/hermiteer/HTObject
+//  for this project http://github.com/hermiteer/CottonObject
 //
 //  Created by Christoph on 6/22/14.
 //
@@ -44,11 +44,6 @@
 // internally the dictionary is mutable
 // but publically exposed as readonly
 @property (nonatomic, strong) NSMutableDictionary* mutableDictionary;
-
-// TODO
-// make sure this works
-// maybe move to it's own file
-- (void) setObject:(id)object withSetter:(SEL)setter;
 
 @end
 
@@ -102,10 +97,10 @@
 
 + (NSArray*) arrayFromArray:(NSArray*)array withClass:(Class)aClass
 {
-    // this only supports making arrays of HTObject subclasses
-    // this is what allows parent-child HTObject classes to be instanced
+    // this only supports making arrays of CottonObject subclasses
+    // this is what allows parent-child CottonObject classes to be instanced
     ZAssert([aClass isMemberOfClass:CottonObject.class],
-            @"Class '%@' must be a subclass of HTObject",
+            @"Class '%@' must be a subclass of CottonObject",
             NSStringFromClass(aClass));
 
     // if a nil array is specified
@@ -114,7 +109,7 @@
 
     // it's important to note that this only works with
     // classes that support initWithDictionary which happens
-    // to be the HTObject subclasses, if an unsupported class
+    // to be the CottonObject subclasses, if an unsupported class
     // is specified, this will probably blow up with a runtime error
     for (NSDictionary* dictionary in array)
     {
@@ -126,8 +121,6 @@
     return newArray;
 }
 
-//------------------------------------------------------------------------------
-#pragma mark - Base property support
 //------------------------------------------------------------------------------
 
 - (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key
@@ -174,7 +167,7 @@
     ZAssert(isDictionary, @"Value for key '%@' is not an NSDictionary", key);
 
     // TODO
-    // need to make sure this is an HTObject subclass
+    // need to make sure this is an CottonObject subclass
     // make an instance of the class with the confirmed dictionary
     id object = [[objectClass alloc] initWithDictionary:value];
 
@@ -190,10 +183,9 @@
 }
 
 //------------------------------------------------------------------------------
+#pragma mark - Support for readwrite properties
+//------------------------------------------------------------------------------
 
-// TODO
-// this does a lot of string manipulation so it is NOT suitable
-// for performant code, consider making a new object instance
 - (void) setObject:(id)object withSetter:(SEL)setter
 {
     // turn the setter into a string
@@ -314,7 +306,7 @@
 {
     // TODO
     // this might need to walk the inheritance chain
-    // if there are subclasses of subclasses of HTObject
+    // if there are subclasses of subclasses of CottonObject
     // read all the properties from the object
     unsigned int count;
     objc_property_t* properties = class_copyPropertyList(self.class, &count);

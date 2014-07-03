@@ -1,7 +1,7 @@
 //******************************************************************************
-//  HTObject - a thin wrapper around NSDictionary to make life better with
+//  CottonObject - a thin wrapper around NSDictionary to make life better with
 //  JSON (and other) network objects.  For more details, checkout the github
-//  for this project http://github.com/hermiteer/HTObject
+//  for this project http://github.com/hermiteer/CottonObject
 //
 //  Created by Christoph on 6/22/14.
 //

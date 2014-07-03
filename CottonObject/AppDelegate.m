@@ -1,7 +1,7 @@
 //******************************************************************************
-//  HTObject - a thin wrapper around NSDictionary to make life better with
+//  CottonObject - a thin wrapper around NSDictionary to make life better with
 //  JSON (and other) network objects.  For more details, checkout the github
-//  for this project http://github.com/hermiteer/HTObject
+//  for this project http://github.com/hermiteer/CottonObject
 //
 //  Created by Christoph on 6/22/14.
 //
@@ -54,7 +54,7 @@
     // this is an example of how to fake data while developing
     // the JSON blob from a web endpoint gets turned into an NSDictionary
     // so it's easy to see how a response block can return your
-    // strongly typed HTObject subclass
+    // strongly typed CottonObject subclass
     NSURL* url = [[NSBundle mainBundle] URLForResource:@"SampleObject" withExtension:@"plist"];
     NSDictionary* dictionary = [NSDictionary dictionaryWithContentsOfURL:url];
     SampleObject* object = [[SampleObject alloc] initWithDictionary:dictionary];
