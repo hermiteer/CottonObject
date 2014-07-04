@@ -6,7 +6,7 @@ A cushy, comfy, oh-so-soft wrapper around NSDictionary to make life easier with 
 
 There are lots of web endpoints that returns blobs of text that frameworks like RestKit or JSONKit turns into Cocoa's NSDictionary and NSArray.  Unfortunately, the app code that needs to use the NSDictionary needs to use NSString keys to pull values out.  This is error prone and time-consuming, not to mention Xcode won't auto-complete the keys unless you declare them as constants.  Multiply this by the number of values in a response and you'll quickly see how messy it gets. 
 
-```
+```objectivec
 [someNetworkFramework GET:@"blahblahblah"
                 parameters:parameters
                    success:^(NetworkOperation* operation,
@@ -31,7 +31,7 @@ CottonObject allows a developer to take the NSDictionary response and quickly wr
 How to use it
 ========
 
-```
+```objectivec
 // declare a subclass of CottonObject
 @interface SampleObject : CottonObject
 
@@ -47,7 +47,7 @@ How to use it
 
 If the internal dictionary has, for some reason, a different name for the value than the property name, you can use a string as the key.  This is helpful to correct inconsistencies between the client and server API.
 
-```
+```objectivec
 // declare the property in the .h
 @property (nonatomic, readonly) NSString* myName;
 
@@ -60,7 +60,7 @@ If the internal dictionary has, for some reason, a different name for the value 
 
 If a property is an NSDictionary (i.e. a dictionary with dictionary values), you can establish parent-child CottonObject hierarchies.
 
-```
+```objectivec
 // declare the child object
 @interface Child : CottonObject
 ...
@@ -82,7 +82,7 @@ If a property is an NSDictionary (i.e. a dictionary with dictionary values), you
 
 But what about read-write properties?  Well, CottonObject can help you there too.
 
-```
+```objectivec
 // declare a read-write property
 @property (nonatomic, copy) NSString* name;
 
@@ -101,7 +101,7 @@ But what about read-write properties?  Well, CottonObject can help you there too
 
 Remember that the internal NSDictionary only supports NSObject instances, so if your property is a primitive, you'll need to transform it in the setter.
 
-```
+```objectivec
 // declare a primitive read-write property
 @property (nonatomic) NSUInteger count;
 
