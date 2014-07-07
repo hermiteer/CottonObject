@@ -79,6 +79,19 @@
 - (NSUInteger) unsignedIntegerForGetter:(SEL)getter;
 
 //------------------------------------------------------------------------------
+#pragma mark Setters by NSString key
+//------------------------------------------------------------------------------
+
+- (void) setBool:(BOOL)value forKey:(NSString*)key;
+- (void) setFloat:(CGFloat)value forKey:(NSString*)key;
+- (void) setInteger:(NSInteger)value forKey:(NSString*)key;
+- (void) setNumber:(NSNumber*)value forKey:(NSString*)key;
+- (void) setSelector:(SEL)selector forKey:(NSString*)key;
+- (void) setString:(NSString*)value forKey:(NSString*)key;
+- (void) setUrl:(NSURL*)url forKey:(NSString*)key;
+- (void) setUnsignedInteger:(NSUInteger)value forKey:(NSString*)key;
+
+//------------------------------------------------------------------------------
 #pragma mark - Factory methods for child CottonObjects
 //------------------------------------------------------------------------------
 
@@ -91,7 +104,7 @@
 //------------------------------------------------------------------------------
 
 - (void) setObject:(id)object withSetter:(SEL)setter;
-- (void) setObject:(id)object withKey:(NSString*)key;
+- (void) setObject:(id)object forKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
 

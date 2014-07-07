@@ -219,6 +219,68 @@
 - (NSUInteger) unsignedIntegerForGetter:(SEL)getter     { return [self unsignedIntegerForKey:NSStringFromSelector(getter)]; }
 
 //------------------------------------------------------------------------------
+#pragma mark Setters by NSString key
+//------------------------------------------------------------------------------
+
+- (void) setBool:(BOOL)value forKey:(NSString*)key
+{
+    NSNumber* valueNumber = @(value);
+    self.mutableDictionary[key] = valueNumber;
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setFloat:(CGFloat)value forKey:(NSString*)key
+{
+    NSNumber* valueNumber = @(value);
+    self.mutableDictionary[key] = valueNumber;
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setInteger:(NSInteger)value forKey:(NSString*)key
+{
+    NSNumber* valueNumber = @(value);
+    self.mutableDictionary[key] = valueNumber;
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setNumber:(NSNumber*)value forKey:(NSString*)key
+{
+    self.mutableDictionary[key] = value;
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setSelector:(SEL)selector forKey:(NSString*)key
+{
+    self.mutableDictionary[key] = NSStringFromSelector(selector);
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setString:(NSString*)value forKey:(NSString*)key
+{
+    self.mutableDictionary[key] = value;
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setUrl:(NSURL*)url forKey:(NSString*)key
+{
+    self.mutableDictionary[key] = url.absoluteString;
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setUnsignedInteger:(NSUInteger)value forKey:(NSString*)key
+{
+    NSNumber* valueNumber = @(value);
+    self.mutableDictionary[key] = valueNumber;
+}
+
+//------------------------------------------------------------------------------
 #pragma mark - Factory methods
 //------------------------------------------------------------------------------
 
@@ -310,18 +372,18 @@
 }
 
 //------------------------------------------------------------------------------
-#pragma mark - Setters by NSString key
+#pragma mark - Readwrite property support
 //------------------------------------------------------------------------------
 
 - (void) setObject:(id)object withSetter:(SEL)setter
 {
     NSString* key = NSStringFromSelector(setter);
-    [self setObject:object withKey:key];
+    [self setObject:object forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
-- (void) setObject:(id)object withKey:(NSString*)key
+- (void) setObject:(id)object forKey:(NSString*)key
 {
     // key must be at least a 4 character string
     ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
