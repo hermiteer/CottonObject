@@ -378,7 +378,7 @@
 {
     // this only supports making arrays of CottonObject subclasses
     // this is what allows parent-child CottonObject classes to be instanced
-    ZAssert([aClass isMemberOfClass:CottonObject.class],
+    ZAssert([aClass isMemberOfClass:CottonObject.class] == NO,
             @"Class '%@' must be a subclass of CottonObject",
             NSStringFromClass(aClass));
 
