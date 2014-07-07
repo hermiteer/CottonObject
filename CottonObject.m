@@ -65,6 +65,18 @@
 
 //------------------------------------------------------------------------------
 
+- (id) init
+{
+    self = [super init];
+    if (self != nil)
+    {
+        _mutableDictionary = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
+//------------------------------------------------------------------------------
+
 - (id) initWithDictionary:(NSDictionary*)dictionary
 {
     self = [super init];
@@ -447,6 +459,10 @@
 {
     // get the instance for the key
     id value = self.dictionary[key];
+    if (value == nil)
+    {
+        return nil;
+    }
 
     // test the value for class type
     BOOL isDictionary = ([value isKindOfClass:NSDictionary.class]);
