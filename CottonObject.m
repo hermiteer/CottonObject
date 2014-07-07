@@ -53,6 +53,18 @@
 
 //------------------------------------------------------------------------------
 
+- (id) init
+{
+    self = [super init];
+    if (self != nil)
+    {
+        _mutableDictionary = [NSMutableDictionary dictionary];
+    }
+    return self;
+}
+
+//------------------------------------------------------------------------------
+
 - (id) initWithDictionary:(NSDictionary*)dictionary
 {
     self = [super init];
