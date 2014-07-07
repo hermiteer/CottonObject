@@ -40,14 +40,14 @@
 
 - (NSString*) name
 {
-    return [self stringForKey:NSStringFromSelector(_cmd)];
+    return [self stringForGetter:_cmd];
 }
 
 //------------------------------------------------------------------------------
 
 - (NSNumber*) type
 {
-    return [self numberForKey:NSStringFromSelector(_cmd)];
+    return [self numberForGetter:_cmd];
 }
 
 //------------------------------------------------------------------------------
@@ -56,14 +56,14 @@
 
 - (NSString*) title
 {
-    return [self stringForKey:NSStringFromSelector(_cmd)];
+    return [self stringForGetter:_cmd];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setTitle:(NSString*)title
 {
-    [self setObject:title withSetter:_cmd];
+    [self setString:title forSetter:_cmd];
 }
 
 //------------------------------------------------------------------------------

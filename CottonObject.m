@@ -281,6 +281,96 @@
 }
 
 //------------------------------------------------------------------------------
+#pragma mark Setters by SEL
+//------------------------------------------------------------------------------
+
+- (void) setBool:(BOOL)value forSetter:(SEL)setter
+{
+    NSNumber* number = @(value);
+    [self setObject:number forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setFloat:(CGFloat)value forSetter:(SEL)setter
+{
+    NSNumber* number = @(value);
+    [self setObject:number forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setInteger:(NSInteger)value forSetter:(SEL)setter
+{
+    NSNumber* number = @(value);
+    [self setObject:number forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setNumber:(NSNumber*)value forSetter:(SEL)setter
+{
+    [self setObject:value forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setSelector:(SEL)selector forSetter:(SEL)setter
+{
+    [self setObject:NSStringFromSelector(selector) forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setString:(NSString*)value forSetter:(SEL)setter
+{
+    [self setObject:value forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setUrl:(NSURL*)url forSetter:(SEL)setter
+{
+    [self setObject:url forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setUnsignedInteger:(NSUInteger)value forSetter:(SEL)setter
+{
+    NSNumber* number = @(value);
+    [self setObject:number forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+#pragma mark - Readwrite property support
+//------------------------------------------------------------------------------
+
+- (void) setObject:(id)object forSetter:(SEL)setter
+{
+    // key must be at least a 4 character string
+    NSString* key = NSStringFromSelector(setter);
+    ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
+
+    // validate it for the form setBlah:
+    NSArray* tokens = [key componentsSeparatedByString:@":"];
+    ZAssert(tokens.count == 2, @"Setter '%@' can only have one argument", key);
+    ZAssert([key hasPrefix:@"set"], @"Setter '%@' must start with 'set'", key);
+
+    // strip the set and : from the name
+    NSRange range = NSMakeRange(3, key.length - 4);
+    key = [key substringWithRange:range];
+
+    // turn the first character into a lower case letter
+    NSString* character = [key substringToIndex:1];
+    key = [key stringByReplacingOccurrencesOfString:character
+                                         withString:character.lowercaseString];
+
+    // insert the object into the mutable dictionary
+    self.mutableDictionary[key] = object;
+}
+
+//------------------------------------------------------------------------------
 #pragma mark - Factory methods
 //------------------------------------------------------------------------------
 
@@ -369,41 +459,6 @@
 
     // done
     return object;
-}
-
-//------------------------------------------------------------------------------
-#pragma mark - Readwrite property support
-//------------------------------------------------------------------------------
-
-- (void) setObject:(id)object withSetter:(SEL)setter
-{
-    NSString* key = NSStringFromSelector(setter);
-    [self setObject:object forKey:key];
-}
-
-//------------------------------------------------------------------------------
-
-- (void) setObject:(id)object forKey:(NSString*)key
-{
-    // key must be at least a 4 character string
-    ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
-
-    // validate it for the form setBlah:
-    NSArray* tokens = [key componentsSeparatedByString:@":"];
-    ZAssert(tokens.count == 2, @"Setter '%@' can only have one argument", key);
-    ZAssert([key hasPrefix:@"set"], @"Setter '%@' must start with 'set'", key);
-
-    // strip the set and : from the name
-    NSRange range = NSMakeRange(3, key.length - 4);
-    key = [key substringWithRange:range];
-
-    // turn the first character into a lower case letter
-    NSString* character = [key substringToIndex:1];
-    key = [key stringByReplacingOccurrencesOfString:character
-                                         withString:character.lowercaseString];
-
-    // insert the object into the mutable dictionary
-    self.mutableDictionary[key] = object;
 }
 
 //------------------------------------------------------------------------------

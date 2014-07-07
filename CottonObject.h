@@ -92,19 +92,31 @@
 - (void) setUnsignedInteger:(NSUInteger)value forKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
+#pragma mark Setters by SEL
+//------------------------------------------------------------------------------
+
+- (void) setBool:(BOOL)value forSetter:(SEL)setter;
+- (void) setFloat:(CGFloat)value forSetter:(SEL)setter;
+- (void) setInteger:(NSInteger)value forSetter:(SEL)setter;
+- (void) setNumber:(NSNumber*)value forSetter:(SEL)setter;
+- (void) setSelector:(SEL)selector forSetter:(SEL)setter;
+- (void) setString:(NSString*)value forSetter:(SEL)setter;
+- (void) setUrl:(NSURL*)url forSetter:(SEL)setter;
+- (void) setUnsignedInteger:(NSUInteger)value forSetter:(SEL)setter;
+
+//------------------------------------------------------------------------------
+#pragma mark - Readwrite property support
+//------------------------------------------------------------------------------
+
+- (void) setObject:(id)object forSetter:(SEL)setter;
+
+//------------------------------------------------------------------------------
 #pragma mark - Factory methods for child CottonObjects
 //------------------------------------------------------------------------------
 
 + (NSArray*) arrayFromArray:(NSArray*)array withClass:(Class)aClass;
 - (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key;
 - (id) objectWithClass:(Class)objectClass forKey:(NSString*)key;
-
-//------------------------------------------------------------------------------
-#pragma mark - Readwrite property support
-//------------------------------------------------------------------------------
-
-- (void) setObject:(id)object withSetter:(SEL)setter;
-- (void) setObject:(id)object forKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
 
