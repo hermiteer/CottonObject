@@ -28,6 +28,17 @@ CottonObject allows a developer to take the NSDictionary response and quickly wr
 3.  Provides type-safe getters and setters to the dictionary.  Missing or wrongly keyed values return nil and as long as your code supports that (it awlays should), you'll avoid crashes when your web endpoint results change unexpectedly.
 4.  The property names are used as keys, eliminating the need for declaring string constants.
 
+How does it work?
+========
+
+The trick is to use the _cmd variable, which is a hidden instance variable inside every Objective-C method's context.  When a property is synthesized, the compiler creates a method of the same name as the property.  You can override that method with your own version, and so CottonObject adds some convenience methods to use the _cmd variable as the key to the object's internal dictionary.
+
+```
+IMPORTANT: Note that if you specify the getter in the property declaration, that will be
+the name of the getter method.  In this case, you can use the xxxForKey flavor methods and
+re-map the value in the dictionary.
+```
+
 How to use it
 ========
 
@@ -107,15 +118,4 @@ How to install it
 Simply download CottonObject.h and CottonObject.c, then add to your project.  CottonObject uses ARC, so if your project does not, follow these instructions http://www.codeography.com/2011/10/10/making-arc-and-non-arc-play-nice.html.
 
 Support for Cocoapods is coming soon!
-
-How does it work?
-========
-
-The trick is to use the _cmd variable, which is a hidden instance variable inside every Objective-C method's context.  When a property is synthesized, the compiler creates a method of the same name as the property.  You can override that method with your own version, and so CottonObject adds some convenience methods to use the _cmd variable as the key to the object's internal dictionary.
-
-```
-IMPORTANT: Note that if you specify the getter in the property declaration, that will be
-the name of the getter method.  In this case, you can use the xxxForKey flavor methods and
-re-map the value in the dictionary.
-```
 
