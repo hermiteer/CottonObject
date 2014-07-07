@@ -72,6 +72,39 @@
 }
 
 //------------------------------------------------------------------------------
+
+- (NSString*) description
+{
+    return self.dictionary.description;
+}
+
+//------------------------------------------------------------------------------
+
+- (BOOL) dictionaryMatchesDeclaredProperties
+{
+    // TODO
+    // this might need to walk the inheritance chain
+    // if there are subclasses of subclasses of CottonObject
+    // read all the properties from the object
+    unsigned int count;
+    objc_property_t* properties = class_copyPropertyList(self.class, &count);
+    NSMutableArray* keys = [NSMutableArray array];
+    for (int i = 0; i < count; i++)
+    {
+        objc_property_t property = properties[i];
+        const char* propertyName = property_getName(property);
+        NSString* key = [NSString stringWithUTF8String:propertyName];
+        [keys addObject:key];
+    }
+
+    // if the dictionary matches the declared properties
+    // then interestion of the two would be empty
+    NSMutableSet* keysSet = [NSMutableSet setWithArray:keys];
+    [keysSet minusSet:[NSSet setWithArray:self.dictionary.allKeys]];
+    return (keysSet.count == 0);
+}
+
+//------------------------------------------------------------------------------
 #pragma mark - NSCoding support
 //------------------------------------------------------------------------------
 
@@ -90,6 +123,100 @@
     NSDictionary* dictionary = [[NSDictionary alloc] initWithCoder:aDecoder];
     return [self initWithDictionary:dictionary];
 }
+
+//------------------------------------------------------------------------------
+#pragma mark - Getters by NSString key
+//------------------------------------------------------------------------------
+
+- (BOOL) boolForKey:(NSString*)key
+{
+    NSNumber* boolNumber = [self objectWithClass:NSNumber.class forKey:key];
+    return boolNumber.boolValue;
+}
+
+//------------------------------------------------------------------------------
+
+- (CGFloat) floatForKey:(NSString*)key
+{
+    NSNumber* floatNumber = [self objectWithClass:NSNumber.class forKey:key];
+    return floatNumber.floatValue;
+}
+
+//------------------------------------------------------------------------------
+
+- (NSInteger) integerForKey:(NSString*)key
+{
+    NSNumber* integerNumber = [self numberForKey:key];
+    return integerNumber.integerValue;
+}
+
+//------------------------------------------------------------------------------
+
+- (NSNumber*) numberForKey:(NSString*)key
+{
+    // already a number
+    NSNumber* number = [self objectWithClass:NSNumber.class forKey:key];
+    if (number != nil)
+    {
+        return number;
+    }
+    
+    // number from a string
+    NSString* stringValue = [self objectWithClass:NSString.class forKey:key];
+    if (stringValue)
+    {
+        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+        number = [formatter numberFromString:stringValue];
+    }
+        
+    // if this far then not a number
+    return number;
+}
+
+//------------------------------------------------------------------------------
+
+- (SEL) selectorForKey:(NSString*)key
+{
+    NSString* selectorString = [self stringForKey:key];
+    SEL selector = (selectorString != nil ? NSSelectorFromString(selectorString) : nil);
+    return selector;
+}
+
+//------------------------------------------------------------------------------
+
+- (NSString*) stringForKey:(NSString*)key
+{
+    return [self objectWithClass:NSString.class forKey:key];
+}
+
+//------------------------------------------------------------------------------
+
+- (NSUInteger) unsignedIntegerForKey:(NSString*)key
+{
+    return [self numberForKey:key].unsignedIntegerValue;
+}
+
+//------------------------------------------------------------------------------
+
+- (NSURL*) urlForKey:(NSString*)key
+{
+    NSString* urlString = [self stringForKey:key];
+    NSURL* url = (urlString != nil ? [NSURL URLWithString:urlString] : nil);
+    return url;
+}
+
+//------------------------------------------------------------------------------
+#pragma mark Getters by SEL
+//------------------------------------------------------------------------------
+
+- (BOOL) boolForGetter:(SEL)getter                      { return [self boolForKey:NSStringFromSelector(getter)]; }
+- (CGFloat) floatForGetter:(SEL)getter                  { return [self floatForKey:NSStringFromSelector(getter)]; }
+- (NSInteger) integerForGetter:(SEL)getter              { return [self integerForKey:NSStringFromSelector(getter)]; }
+- (NSNumber*) numberForGetter:(SEL)getter               { return [self numberForKey:NSStringFromSelector(getter)]; }
+- (SEL) selectorForGetter:(SEL)getter                   { return [self selectorForKey:NSStringFromSelector(getter)]; }
+- (NSString*) stringForGetter:(SEL)getter               { return [self stringForKey:NSStringFromSelector(getter)]; }
+- (NSURL*) urlForGetter:(SEL)getter                     { return [self urlForKey:NSStringFromSelector(getter)]; }
+- (NSUInteger) unsignedIntegerForGetter:(SEL)getter     { return [self unsignedIntegerForKey:NSStringFromSelector(getter)]; }
 
 //------------------------------------------------------------------------------
 #pragma mark - Factory methods
@@ -116,7 +243,7 @@
         id object = [[aClass alloc] initWithDictionary:dictionary];
         [newArray addObject:object];
     }
-    
+
     // done
     return newArray;
 }
@@ -131,20 +258,20 @@
     {
         return nil;
     }
-    
+
     // nothing else to do if empty
     if (array.count == 0)
     {
         return array;
     }
-    
+
     // check the first element in the array
     // if it's of the specified class then nothing to do
     if ([[array.firstObject class] isSubclassOfClass:objectClass])
     {
         return array;
     }
-    
+
     // create the array and backfill into the parent dictionary
     NSArray* classedArray = [CottonObject arrayFromArray:array withClass:objectClass];
     return classedArray;
@@ -183,14 +310,20 @@
 }
 
 //------------------------------------------------------------------------------
-#pragma mark - Support for readwrite properties
+#pragma mark - Setters by NSString key
 //------------------------------------------------------------------------------
 
 - (void) setObject:(id)object withSetter:(SEL)setter
 {
-    // turn the setter into a string
-    // it must be at least a 4 character string
     NSString* key = NSStringFromSelector(setter);
+    [self setObject:object withKey:key];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setObject:(id)object withKey:(NSString*)key
+{
+    // key must be at least a 4 character string
     ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
 
     // validate it for the form setBlah:
@@ -209,121 +342,6 @@
 
     // insert the object into the mutable dictionary
     self.mutableDictionary[key] = object;
-}
-
-//------------------------------------------------------------------------------
-#pragma mark - Type safe object property support
-//------------------------------------------------------------------------------
-
-- (NSNumber*) numberForKey:(NSString*)key
-{
-    // if already a number
-    NSNumber* number = [self objectWithClass:NSNumber.class forKey:key];
-    if (number)
-    {
-        return number;
-    }
-    
-    // number from a string
-    NSString* stringValue = [self objectWithClass:NSString.class forKey:key];
-    if (stringValue)
-    {
-        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
-        number = [formatter numberFromString:stringValue];
-    }
-        
-    // if this far then not a number
-    return number;
-}
-
-//------------------------------------------------------------------------------
-
-- (SEL) selectorForKey:(NSString*)key
-{
-    return NSSelectorFromString(self.dictionary[key]);
-}
-
-//------------------------------------------------------------------------------
-
-- (NSString*) stringForKey:(NSString*)key
-{
-    return [self objectWithClass:NSString.class forKey:key];
-}
-
-//------------------------------------------------------------------------------
-
-- (NSURL*) urlForKey:(NSString*)key
-{
-    NSString* urlString = [self stringForKey:key];
-    NSURL* url = (urlString != nil ? [NSURL URLWithString:urlString] : nil);
-    return url;
-}
-
-//------------------------------------------------------------------------------
-#pragma mark - Type safe primitive property support
-//------------------------------------------------------------------------------
-
-- (BOOL) boolForKey:(NSString*)key
-{
-    NSNumber* boolNumber = [self objectWithClass:NSNumber.class forKey:key];
-    return boolNumber.boolValue;
-}
-
-//------------------------------------------------------------------------------
-
-- (CGFloat) floatForKey:(NSString*)key
-{
-    NSNumber* floatNumber = [self objectWithClass:NSNumber.class forKey:key];
-    return floatNumber.floatValue;
-}
-
-//------------------------------------------------------------------------------
-
-- (NSInteger) integerForKey:(NSString*)key
-{
-    return [self numberForKey:key].integerValue;
-}
-
-//------------------------------------------------------------------------------
-
-- (NSUInteger) unsignedIntegerForKey:(NSString*)key
-{
-    return [self numberForKey:key].unsignedIntegerValue;
-}
-
-//------------------------------------------------------------------------------
-#pragma mark - Debug support
-//------------------------------------------------------------------------------
-
-- (NSString*) description
-{
-    return self.dictionary.description;
-}
-
-//------------------------------------------------------------------------------
-
-- (BOOL) dictionaryMatchesDeclaredProperties
-{
-    // TODO
-    // this might need to walk the inheritance chain
-    // if there are subclasses of subclasses of CottonObject
-    // read all the properties from the object
-    unsigned int count;
-    objc_property_t* properties = class_copyPropertyList(self.class, &count);
-    NSMutableArray* keys = [NSMutableArray array];
-    for (int i = 0; i < count; i++)
-    {
-        objc_property_t property = properties[i];
-        const char* propertyName = property_getName(property);
-        NSString* key = [NSString stringWithUTF8String:propertyName];
-        [keys addObject:key];
-    }
-
-    // if the dictionary matches the declared properties
-    // then interestion of the two would be empty
-    NSMutableSet* keysSet = [NSMutableSet setWithArray:keys];
-    [keysSet minusSet:[NSSet setWithArray:self.dictionary.allKeys]];
-    return (keysSet.count == 0);
 }
 
 //------------------------------------------------------------------------------

@@ -32,7 +32,8 @@
 
 //------------------------------------------------------------------------------
 
-// 
+// subclasses are encouraged define their own NSArray of
+// types to add clarity to their APIs
 #define NSArrayOfNSNumber NSArray
 #define NSArrayOfNSString NSArray
 #define NSArrayOfSelector NSArray
@@ -68,9 +69,6 @@
 #pragma mark Getters by SEL
 //------------------------------------------------------------------------------
 
-// TODO christoph
-// need to implement this, just running out of time
-/*
 - (BOOL) boolForGetter:(SEL)getter;
 - (CGFloat) floatForGetter:(SEL)getter;
 - (NSInteger) integerForGetter:(SEL)getter;
@@ -79,7 +77,6 @@
 - (NSString*) stringForGetter:(SEL)getter;
 - (NSURL*) urlForGetter:(SEL)getter;
 - (NSUInteger) unsignedIntegerForGetter:(SEL)getter;
-*/
 
 //------------------------------------------------------------------------------
 #pragma mark - Factory methods for child CottonObjects
@@ -90,12 +87,11 @@
 - (id) objectWithClass:(Class)objectClass forKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
-#pragma mark - Setters by NSString key
+#pragma mark - Readwrite property support
 //------------------------------------------------------------------------------
 
-// TODO christoph
-// need to add setters for the supported types
 - (void) setObject:(id)object withSetter:(SEL)setter;
+- (void) setObject:(id)object withKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
 
