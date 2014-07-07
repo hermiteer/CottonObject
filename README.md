@@ -25,8 +25,8 @@ CottonObject allows a developer to take the NSDictionary response and quickly wr
 
 1.  Because the object uses NSDictionary as the data store, it can be easily de/serialized using the NSCoding protocol.
 2.  Objects can be "faked" with dictionaries instanced from plists if your network or API is not up yet.
-3.  The objects can enforce types.  So as long as your code can handle properties with nil values, the web endpoint can switch types and the worst is that a value may no longer be shown.
-4.  The property names are used a keys, eliminating the need for declaring string constants.
+3.  Provides type-safe getters and setters to the dictionary.  Missing or wrongly keyed values return nil and as long as your code supports that (it awlays should), you'll avoid crashes when your web endpoint results change unexpectedly.
+4.  The property names are used as keys, eliminating the need for declaring string constants.
 
 How to use it
 ========
@@ -80,7 +80,7 @@ If a property is an NSDictionary (i.e. a dictionary with dictionary values), you
 }
 ```
 
-But what about read-write properties?  Well, CottonObject can help you there too.
+But what about read-write properties?  Well, CottonObject can help you there too.  It provides several convenience APIs to set primitive and NSObject subclasses.
 
 ```objectivec
 // declare a read-write property
@@ -95,31 +95,11 @@ But what about read-write properties?  Well, CottonObject can help you there too
 // implement setter
 - (void) setName:(NSString*)name
 {
-  [self setObject:name withSetter:_cmd];
+  [self setString:name forSetter:_cmd];
 }
 ```
 
-Remember that the internal NSDictionary only supports NSObject instances, so if your property is a primitive, you'll need to transform it in the setter.
-
-```objectivec
-// declare a primitive read-write property
-@property (nonatomic) NSUInteger count;
-
-// implementer getter
-- (NSUInteger) count
-{
-  return [self unsignedIntegerForGetter:_cmd];
-}
-
-// implement setter
-- (void) setCount:(NSUInteger)count
-{
-  NSNumber* countNumber = @(count);
-  [self setObject:countNumber withSetter:_cmd];
-}
-```
-
-Checkout the CottonObject sample Xcode project.  It has a SampleObject that is created from a plist dictionary and shows how to declare, implement and use the SampleObject.
+Checkout the CottonObject sample Xcode project.  It declares SampleObject and shows how it is instanced from an NSDictionary plist.
 
 How to install it
 ========
