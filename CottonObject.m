@@ -53,18 +53,6 @@
 
 //------------------------------------------------------------------------------
 
-- (id) init
-{
-    self = [super init];
-    if (self != nil)
-    {
-        _mutableDictionary = [NSMutableDictionary dictionary];
-    }
-    return self;
-}
-
-//------------------------------------------------------------------------------
-
 - (id) initWithDictionary:(NSDictionary*)dictionary
 {
     self = [super init];
@@ -360,6 +348,13 @@
 
 - (void) setObject:(id)object forSetter:(SEL)setter
 {
+    // ignore nil objects
+    if (object == nil)
+    {
+        DLog(@"Attempted to insert nil object for setter '%@'", NSStringFromSelector(setter));
+        return;
+    }
+
     // key must be at least a 4 character string
     NSString* key = NSStringFromSelector(setter);
     ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);

@@ -70,6 +70,10 @@
     NSLog(@"Sample Object %@", object.description);
     NSLog(@"Child Object %@", object.childObject.description);
 
+    // set a nil value (which is ignored)
+    // a message will be logged only for DEBUG builds
+    object.title = nil;
+
     // validate the object
     // use this in unit tests to make sure the client and
     // the endpoint are in step
