@@ -70,15 +70,17 @@
     NSLog(@"Sample Object %@", object.description);
     NSLog(@"Child Object %@", object.childObject.description);
 
-    // set a nil value (which is ignored)
-    // a message will be logged only for DEBUG builds
-    object.title = nil;
-
     // validate the object
     // use this in unit tests to make sure the client and
     // the endpoint are in step
     BOOL matches = [object dictionaryMatchesDeclaredProperties];
-    NSLog(@"Does this object's dictionary matches the declared properties %@", (matches ? @"YES" : @"NO"));
+    NSLog(@"Does this object's dictionary matches the declared properties '%@'", (matches ? @"YES" : @"NO"));
+
+    // change a value to nil
+    NSLog(@"Setting object.title to nil");
+    object.title = nil;
+    matches = [object dictionaryMatchesDeclaredProperties];
+    NSLog(@"Does this object's dictionary matches the declared properties '%@'", (matches ? @"YES" : @"NO"));
 }
 
 //------------------------------------------------------------------------------

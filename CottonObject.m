@@ -360,13 +360,6 @@
 
 - (void) setObject:(id)object forSetter:(SEL)setter
 {
-    // ignore nil objects
-    if (object == nil)
-    {
-        DLog(@"Attempted to insert nil object for setter '%@'", NSStringFromSelector(setter));
-        return;
-    }
-
     // key must be at least a 4 character string
     NSString* key = NSStringFromSelector(setter);
     ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
@@ -385,8 +378,17 @@
     key = [key stringByReplacingOccurrencesOfString:character
                                          withString:character.lowercaseString];
 
-    // insert the object into the mutable dictionary
-    self.mutableDictionary[key] = object;
+    // insert the non-nil object into the mutable dictionary
+    if (object != nil)
+    {
+        self.mutableDictionary[key] = object;
+    }
+
+    // otherwise remove it from the mutable dictionary
+    else
+    {
+        [self.mutableDictionary removeObjectForKey:key];
+    }
 }
 
 //------------------------------------------------------------------------------
