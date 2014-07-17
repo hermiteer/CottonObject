@@ -49,7 +49,8 @@
 
 //------------------------------------------------------------------------------
 
-- (id) initWithDictionary:(NSDictionary*)dictionary;
+- (instancetype) init;
+- (instancetype) initWithDictionary:(NSDictionary*)dictionary;
 - (BOOL) dictionaryMatchesDeclaredProperties;
 
 //------------------------------------------------------------------------------
