@@ -21,6 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		53105A62198C052200B457BB /* ZAssert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZAssert.h; sourceTree = "<group>"; };
 		5325609E19574503008B95F3 /* CottonObject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CottonObject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		532560A119574503008B95F3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		532560A319574503008B95F3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -66,6 +67,7 @@
 				532560D41958D98A008B95F3 /* SampleObject.h */,
 				532560D51958D98A008B95F3 /* SampleObject.m */,
 				532560D81958DA8E008B95F3 /* SampleObject.plist */,
+				53105A62198C052200B457BB /* ZAssert.h */,
 				53A95630196291A700685A56 /* CottonObject */,
 				532560A019574503008B95F3 /* Frameworks */,
 				5325609F19574503008B95F3 /* Products */,
