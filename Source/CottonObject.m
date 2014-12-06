@@ -148,7 +148,7 @@
 
 //------------------------------------------------------------------------------
 
-- (CGFloat) floatForKey:(NSString*)key
+- (float) floatForKey:(NSString*)key
 {
     NSNumber* floatNumber = [self objectWithClass:NSNumber.class forKey:key];
     return floatNumber.floatValue;
@@ -222,7 +222,7 @@
 //------------------------------------------------------------------------------
 
 - (BOOL) boolForGetter:(SEL)getter                      { return [self boolForKey:NSStringFromSelector(getter)]; }
-- (CGFloat) floatForGetter:(SEL)getter                  { return [self floatForKey:NSStringFromSelector(getter)]; }
+- (float) floatForGetter:(SEL)getter                  { return [self floatForKey:NSStringFromSelector(getter)]; }
 - (NSInteger) integerForGetter:(SEL)getter              { return [self integerForKey:NSStringFromSelector(getter)]; }
 - (NSNumber*) numberForGetter:(SEL)getter               { return [self numberForKey:NSStringFromSelector(getter)]; }
 - (SEL) selectorForGetter:(SEL)getter                   { return [self selectorForKey:NSStringFromSelector(getter)]; }
@@ -242,7 +242,7 @@
 
 //------------------------------------------------------------------------------
 
-- (void) setFloat:(CGFloat)value forKey:(NSString*)key
+- (void) setFloat:(float)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
     self.mutableDictionary[key] = valueNumber;
@@ -304,7 +304,7 @@
 
 //------------------------------------------------------------------------------
 
-- (void) setFloat:(CGFloat)value forSetter:(SEL)setter
+- (void) setFloat:(float)value forSetter:(SEL)setter
 {
     NSNumber* number = @(value);
     [self setObject:number forSetter:setter];

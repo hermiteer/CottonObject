@@ -59,7 +59,7 @@
 //------------------------------------------------------------------------------
 
 - (BOOL) boolForKey:(NSString*)key;
-- (CGFloat) floatForKey:(NSString*)key;
+- (float) floatForKey:(NSString*)key;
 - (NSInteger) integerForKey:(NSString*)key;
 - (NSNumber*) numberForKey:(NSString*)key;
 - (SEL) selectorForKey:(NSString*)key;
@@ -72,7 +72,7 @@
 //------------------------------------------------------------------------------
 
 - (BOOL) boolForGetter:(SEL)getter;
-- (CGFloat) floatForGetter:(SEL)getter;
+- (float) floatForGetter:(SEL)getter;
 - (NSInteger) integerForGetter:(SEL)getter;
 - (NSNumber*) numberForGetter:(SEL)getter;
 - (SEL) selectorForGetter:(SEL)getter;
@@ -85,7 +85,7 @@
 //------------------------------------------------------------------------------
 
 - (void) setBool:(BOOL)value forKey:(NSString*)key;
-- (void) setFloat:(CGFloat)value forKey:(NSString*)key;
+- (void) setFloat:(float)value forKey:(NSString*)key;
 - (void) setInteger:(NSInteger)value forKey:(NSString*)key;
 - (void) setNumber:(NSNumber*)value forKey:(NSString*)key;
 - (void) setSelector:(SEL)selector forKey:(NSString*)key;
@@ -98,7 +98,7 @@
 //------------------------------------------------------------------------------
 
 - (void) setBool:(BOOL)value forSetter:(SEL)setter;
-- (void) setFloat:(CGFloat)value forSetter:(SEL)setter;
+- (void) setFloat:(float)value forSetter:(SEL)setter;
 - (void) setInteger:(NSInteger)value forSetter:(SEL)setter;
 - (void) setNumber:(NSNumber*)value forSetter:(SEL)setter;
 - (void) setSelector:(SEL)selector forSetter:(SEL)setter;
