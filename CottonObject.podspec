@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = "CottonObject"
-  s.version               = "v0.0.3"
+  s.version               = "0.0.3"
   s.summary               = "A thin wrapper around NSDictionary to make life better with JSON (and other) network responses."
   s.description           = <<-DESC
                             CottonObject allows a developer to take the NSDictionary response and quickly wrap it in a formal Objective-C class. This has a number of benefits:
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.author                = "Christoph"
   s.ios.deployment_target = "5.0"
   s.osx.deployment_target = "10.6"
-  s.source                = { :git => "https://github.com/hermiteer/CottonObject.git", :tag => "v0.0.3" }
+  s.source                = { :git => "https://github.com/hermiteer/CottonObject.git", :tag => "0.0.3" }
   s.source_files          = "Source/*"
   s.requires_arc          = true
 end
