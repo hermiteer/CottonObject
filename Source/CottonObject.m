@@ -358,6 +358,23 @@
 #pragma mark - Readwrite property support
 //------------------------------------------------------------------------------
 
+- (void) setObject:(id)object forKey:(NSString*)key
+{
+    // insert the non-nil object into the mutable dictionary
+    if (object != nil)
+    {
+        self.mutableDictionary[key] = object;
+    }
+
+    // otherwise remove it from the mutable dictionary
+    else
+    {
+        [self.mutableDictionary removeObjectForKey:key];
+    }
+}
+
+//------------------------------------------------------------------------------
+
 - (void) setObject:(id)object forSetter:(SEL)setter
 {
     // key must be at least a 4 character string
@@ -378,17 +395,8 @@
     key = [key stringByReplacingOccurrencesOfString:character
                                          withString:character.lowercaseString];
 
-    // insert the non-nil object into the mutable dictionary
-    if (object != nil)
-    {
-        self.mutableDictionary[key] = object;
-    }
-
-    // otherwise remove it from the mutable dictionary
-    else
-    {
-        [self.mutableDictionary removeObjectForKey:key];
-    }
+    // insert or remove
+    [self setObject:object forKey:key];
 }
 
 //------------------------------------------------------------------------------

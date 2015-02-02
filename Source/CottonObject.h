@@ -110,6 +110,7 @@
 #pragma mark - Readwrite property support
 //------------------------------------------------------------------------------
 
+- (void) setObject:(id)object forKey:(NSString*)key;
 - (void) setObject:(id)object forSetter:(SEL)setter;
 
 //------------------------------------------------------------------------------
