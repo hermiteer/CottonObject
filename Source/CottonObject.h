@@ -122,8 +122,11 @@
 //------------------------------------------------------------------------------
 
 + (NSArray*) arrayFromArray:(NSArray*)array withClass:(Class)aClass;
+- (NSArray*) arrayWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key;
 - (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key;
+- (id) objectWithClassNamed:(Class)objectClassName forKey:(NSString*)key fromBlock:(id(^)())fromBlock;
 - (id) objectWithClass:(Class)objectClass forKey:(NSString*)key fromBlock:(id(^)())fromBlock;
+- (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key;
 - (id) objectWithClass:(Class)objectClass forKey:(NSString*)key;
 
 //------------------------------------------------------------------------------

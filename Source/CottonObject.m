@@ -70,8 +70,10 @@
     self = [super init];
     if (self != nil)
     {
-        BOOL dictionaryIsNotNilOrEmpty = (dictionary != nil && [dictionary isKindOfClass:[NSDictionary class]] && [dictionary count] > 0);
-        CO_Assert(dictionaryIsNotNilOrEmpty, @"Cannot be instanced with a nil or empty dictionary");
+        BOOL dictionaryIsNilOrEmpty = (dictionary == nil || [dictionary isKindOfClass:[NSDictionary class]] == NO || [dictionary count] == 0);
+        if (dictionaryIsNilOrEmpty) {
+            return nil;
+        }
         _mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
     }
     return self;
@@ -455,6 +457,16 @@
     return newArray;
 }
 
+
+//------------------------------------------------------------------------------
+
+- (NSArray*) arrayWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key
+{
+    Class class = NSClassFromString(objectClassName);
+    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    return [self arrayWithClass:class forKey:key];
+}
+
 //------------------------------------------------------------------------------
 
 - (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key
@@ -486,14 +498,24 @@
 
 //------------------------------------------------------------------------------
 
+- (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key fromBlock:(id(^)())fromBlock
+{
+    Class class = NSClassFromString(objectClassName);
+    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    return [self objectWithClass:class forKey:key fromBlock:fromBlock];
+}
+
+//------------------------------------------------------------------------------
+
 - (id) objectWithClass:(Class)objectClass forKey:(NSString*)key fromBlock:(id(^)())fromBlock
 {
     // check if it's already stored
-    id value = [self objectWithClass:objectClass forKey:key];
-    if (value != nil)
-    {
-        return value;
-    }
+    id value = self.dictionary[key];
+    
+    // test the value for class type
+    BOOL isDesiredClass = [value isKindOfClass:objectClass];
+    // nothing to do if already the desired class
+    if (isDesiredClass) { return value; };
     
     CO_Assert(fromBlock, @"You must implement a non-nil fromBlock to create the instance of the object.");
     
@@ -512,6 +534,15 @@
     
     // done
     return object;
+}
+
+//------------------------------------------------------------------------------
+
+- (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key
+{
+    Class class = NSClassFromString(objectClassName);
+    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    return [self objectWithClass:class forKey:key];
 }
 
 //------------------------------------------------------------------------------
