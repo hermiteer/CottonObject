@@ -67,16 +67,44 @@
 
 - (instancetype) initWithDictionary:(NSDictionary*)dictionary
 {
+    return [self initWithDictionary:dictionary removeNullKeys:YES];
+}
+
+//------------------------------------------------------------------------------
+
+- (instancetype) initWithDictionary:(NSDictionary*)dictionary removeNullKeys:(BOOL)removeNullKeys
+{
     self = [super init];
     if (self != nil)
     {
-        BOOL dictionaryIsNilOrEmpty = (dictionary == nil || [dictionary isKindOfClass:[NSDictionary class]] == NO || [dictionary count] == 0);
-        if (dictionaryIsNilOrEmpty) {
+        BOOL dictionaryIsNilOrEmpty = (dictionary == nil ||
+                                       [dictionary isKindOfClass:NSDictionary.class] == NO ||
+                                       dictionary.count == 0);
+        if (dictionaryIsNilOrEmpty)
+        {
             return nil;
+        }
+        
+        if (removeNullKeys)
+        {
+            dictionary = [self dictionaryByRemovingNullKeysFromDictionary:dictionary];
         }
         _mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
     }
     return self;
+}
+
+//------------------------------------------------------------------------------
+
+
+- (NSDictionary*) dictionaryByRemovingNullKeysFromDictionary:(NSDictionary*)dictionary
+{
+    NSMutableDictionary *nonNullDictionary = [dictionary mutableCopy];
+    NSArray *keysForNullValues = [nonNullDictionary allKeysForObject:[NSNull null]];
+    NSArray *keysForNullStringValues = [nonNullDictionary allKeysForObject:@"<null>"];
+    [nonNullDictionary removeObjectsForKeys:keysForNullValues];
+    [nonNullDictionary removeObjectsForKeys:keysForNullStringValues];
+    return nonNullDictionary;
 }
 
 //------------------------------------------------------------------------------
