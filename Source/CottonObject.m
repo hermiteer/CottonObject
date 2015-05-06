@@ -277,7 +277,7 @@
 - (void) setBool:(BOOL)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -285,7 +285,7 @@
 - (void) setFloat:(float)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -293,7 +293,7 @@
 - (void) setDouble:(double)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -301,35 +301,35 @@
 - (void) setInteger:(NSInteger)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setNumber:(NSNumber*)value forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = value;
+    [self setObject:value forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setSelector:(SEL)selector forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = NSStringFromSelector(selector);
+    [self setObject:NSStringFromSelector(selector) forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setString:(NSString*)value forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = value;
+    [self setObject:value forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setUrl:(NSURL*)url forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = url.absoluteString;
+    [self setObject:url.absoluteString forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -337,7 +337,7 @@
 - (void) setUnsignedInteger:(NSUInteger)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
