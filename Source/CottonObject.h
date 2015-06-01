@@ -42,7 +42,7 @@
 
 //------------------------------------------------------------------------------
 
-@interface CottonObject : NSObject <NSCoding>
+@interface CottonObject : NSObject <NSCoding, NSCopying>
 
 //------------------------------------------------------------------------------
 
