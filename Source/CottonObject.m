@@ -521,6 +521,7 @@
 
     // create the array and backfill into the parent dictionary
     NSArray* classedArray = [CottonObject arrayFromArray:array withClass:objectClass];
+    [self setObject:classedArray forKey:key];
     return classedArray;
 }
 
