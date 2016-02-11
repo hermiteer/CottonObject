@@ -117,5 +117,5 @@ How to install it
 
 Simply download CottonObject.h and CottonObject.c, then add to your project.  CottonObject uses ARC, so if your project does not, follow these instructions http://www.codeography.com/2011/10/10/making-arc-and-non-arc-play-nice.html.
 
-Support for Cocoapods is coming soon!
+Support for CocoaPods is coming soon!
 
