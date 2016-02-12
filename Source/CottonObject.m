@@ -67,13 +67,44 @@
 
 - (instancetype) initWithDictionary:(NSDictionary*)dictionary
 {
+    return [self initWithDictionary:dictionary removeNullKeys:YES];
+}
+
+//------------------------------------------------------------------------------
+
+- (instancetype) initWithDictionary:(NSDictionary*)dictionary removeNullKeys:(BOOL)removeNullKeys
+{
     self = [super init];
     if (self != nil)
     {
-        ZAssert(dictionary != nil, @"Cannot be instanced with a nil dictionary");
+        BOOL dictionaryIsNilOrEmpty = (dictionary == nil ||
+                                       [dictionary isKindOfClass:NSDictionary.class] == NO ||
+                                       dictionary.count == 0);
+        if (dictionaryIsNilOrEmpty)
+        {
+            return nil;
+        }
+        
+        if (removeNullKeys)
+        {
+            dictionary = [self dictionaryByRemovingNullKeysFromDictionary:dictionary];
+        }
         _mutableDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
     }
     return self;
+}
+
+//------------------------------------------------------------------------------
+
+
+- (NSDictionary*) dictionaryByRemovingNullKeysFromDictionary:(NSDictionary*)dictionary
+{
+    NSMutableDictionary *nonNullDictionary = [dictionary mutableCopy];
+    NSArray *keysForNullValues = [nonNullDictionary allKeysForObject:[NSNull null]];
+    NSArray *keysForNullStringValues = [nonNullDictionary allKeysForObject:@"<null>"];
+    [nonNullDictionary removeObjectsForKeys:keysForNullValues];
+    [nonNullDictionary removeObjectsForKeys:keysForNullStringValues];
+    return nonNullDictionary;
 }
 
 //------------------------------------------------------------------------------
@@ -156,6 +187,14 @@
 
 //------------------------------------------------------------------------------
 
+- (double) doubleForKey:(NSString*)key
+{
+    NSNumber* doubleNumber = [self objectWithClass:NSNumber.class forKey:key];
+    return doubleNumber.doubleValue;
+}
+
+//------------------------------------------------------------------------------
+
 - (NSInteger) integerForKey:(NSString*)key
 {
     NSNumber* integerNumber = [self numberForKey:key];
@@ -222,7 +261,8 @@
 //------------------------------------------------------------------------------
 
 - (BOOL) boolForGetter:(SEL)getter                      { return [self boolForKey:NSStringFromSelector(getter)]; }
-- (float) floatForGetter:(SEL)getter                  { return [self floatForKey:NSStringFromSelector(getter)]; }
+- (float) floatForGetter:(SEL)getter                    { return [self floatForKey:NSStringFromSelector(getter)]; }
+- (double) doubleForGetter:(SEL)getter                  { return [self doubleForKey:NSStringFromSelector(getter)]; }
 - (NSInteger) integerForGetter:(SEL)getter              { return [self integerForKey:NSStringFromSelector(getter)]; }
 - (NSNumber*) numberForGetter:(SEL)getter               { return [self numberForKey:NSStringFromSelector(getter)]; }
 - (SEL) selectorForGetter:(SEL)getter                   { return [self selectorForKey:NSStringFromSelector(getter)]; }
@@ -237,7 +277,7 @@
 - (void) setBool:(BOOL)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -245,7 +285,15 @@
 - (void) setFloat:(float)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setDouble:(double)value forKey:(NSString*)key
+{
+    NSNumber* valueNumber = @(value);
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -253,35 +301,35 @@
 - (void) setInteger:(NSInteger)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setNumber:(NSNumber*)value forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = value;
+    [self setObject:value forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setSelector:(SEL)selector forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = NSStringFromSelector(selector);
+    [self setObject:NSStringFromSelector(selector) forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setString:(NSString*)value forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = value;
+    [self setObject:value forKey:key];
 }
 
 //------------------------------------------------------------------------------
 
 - (void) setUrl:(NSURL*)url forKey:(NSString*)key
 {
-    self.mutableDictionary[key] = url.absoluteString;
+    [self setObject:url.absoluteString forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -289,7 +337,7 @@
 - (void) setUnsignedInteger:(NSUInteger)value forKey:(NSString*)key
 {
     NSNumber* valueNumber = @(value);
-    self.mutableDictionary[key] = valueNumber;
+    [self setObject:valueNumber forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -305,6 +353,14 @@
 //------------------------------------------------------------------------------
 
 - (void) setFloat:(float)value forSetter:(SEL)setter
+{
+    NSNumber* number = @(value);
+    [self setObject:number forSetter:setter];
+}
+
+//------------------------------------------------------------------------------
+
+- (void) setDouble:(double)value forSetter:(SEL)setter
 {
     NSNumber* number = @(value);
     [self setObject:number forSetter:setter];
@@ -379,12 +435,12 @@
 {
     // key must be at least a 4 character string
     NSString* key = NSStringFromSelector(setter);
-    ZAssert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
+    CO_Assert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
 
     // validate it for the form setBlah:
     NSArray* tokens = [key componentsSeparatedByString:@":"];
-    ZAssert(tokens.count == 2, @"Setter '%@' can only have one argument", key);
-    ZAssert([key hasPrefix:@"set"], @"Setter '%@' must start with 'set'", key);
+    CO_Assert(tokens.count == 2, @"Setter '%@' can only have one argument", key);
+    CO_Assert([key hasPrefix:@"set"], @"Setter '%@' must start with 'set'", key);
 
     // strip the set and : from the name
     NSRange range = NSMakeRange(3, key.length - 4);
@@ -407,9 +463,9 @@
 {
     // this only supports making arrays of CottonObject subclasses
     // this is what allows parent-child CottonObject classes to be instanced
-    ZAssert([aClass isMemberOfClass:CottonObject.class] == NO,
-            @"Class '%@' must be a subclass of CottonObject",
-            NSStringFromClass(aClass));
+    CO_Assert([aClass isMemberOfClass:CottonObject.class] == NO,
+              @"Class '%@' must be a subclass of CottonObject",
+              NSStringFromClass(aClass));
 
     // if a nil array is specified
     // then a non-nil but zero length array will be returned
@@ -427,6 +483,16 @@
 
     // done
     return newArray;
+}
+
+
+//------------------------------------------------------------------------------
+
+- (NSArray*) arrayWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key
+{
+    Class class = NSClassFromString(objectClassName);
+    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    return [self arrayWithClass:class forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -455,7 +521,57 @@
 
     // create the array and backfill into the parent dictionary
     NSArray* classedArray = [CottonObject arrayFromArray:array withClass:objectClass];
+    [self setObject:classedArray forKey:key];
     return classedArray;
+}
+
+//------------------------------------------------------------------------------
+
+- (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key fromBlock:(id(^)())fromBlock
+{
+    Class class = NSClassFromString(objectClassName);
+    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    return [self objectWithClass:class forKey:key fromBlock:fromBlock];
+}
+
+//------------------------------------------------------------------------------
+
+- (id) objectWithClass:(Class)objectClass forKey:(NSString*)key fromBlock:(id(^)())fromBlock
+{
+    // check if it's already stored
+    id value = self.dictionary[key];
+    
+    // test the value for class type
+    BOOL isDesiredClass = [value isKindOfClass:objectClass];
+    // nothing to do if already the desired class
+    if (isDesiredClass) { return value; };
+    
+    CO_Assert(fromBlock, @"You must implement a non-nil fromBlock to create the instance of the object.");
+    
+    // check if the block was able to create a valid object
+    id object = fromBlock();
+    if (object == nil) {
+        return nil;
+    }
+
+    // update the dictionary with the class instance to avoid
+    // the same work in the future, but note that this will NOT
+    // update the object if it's cached to storage somewhere
+    // doing so is architecturally messy from here and it's
+    // probably slower than just instancing the property's class
+    self.mutableDictionary[key] = object;
+    
+    // done
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+- (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key
+{
+    Class class = NSClassFromString(objectClassName);
+    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    return [self objectWithClass:class forKey:key];
 }
 
 //------------------------------------------------------------------------------
@@ -470,16 +586,17 @@
     }
 
     // test the value for class type
-    BOOL isDictionary = ([value isKindOfClass:NSDictionary.class]);
     BOOL isDesiredClass = [value isKindOfClass:objectClass];
-
     // nothing to do if already the desired class
-    // or if it is not a dictionary
     if (isDesiredClass) { return value; };
-    ZAssert(isDictionary, @"Value for key '%@' is not an NSDictionary", key);
+    
+    // and nothing to do if it is not a dictionary
+    BOOL isDictionary = ([value isKindOfClass:NSDictionary.class]);
+    CO_Assert(isDictionary, @"Value for key '%@' is not an NSDictionary", key);
 
-    // TODO
-    // need to make sure this is an CottonObject subclass
+    // ensure we always create an instance of CottonObject
+    CO_Assert([objectClass isSubclassOfClass:CottonObject.class], @"Object you are creating must be a subclass of `CottonObject`");
+
     // make an instance of the class with the confirmed dictionary
     id object = [[objectClass alloc] initWithDictionary:value];
 

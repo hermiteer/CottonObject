@@ -29,7 +29,7 @@
 //******************************************************************************
 
 #import <Foundation/Foundation.h>
-#import "ZAssert.h"
+#import "CO_Assert.h"
 
 //------------------------------------------------------------------------------
 
@@ -52,6 +52,7 @@
 
 - (instancetype) init;
 - (instancetype) initWithDictionary:(NSDictionary*)dictionary;
+- (instancetype) initWithDictionary:(NSDictionary*)dictionary removeNullKeys:(BOOL)removeNullKeys;
 - (BOOL) dictionaryMatchesDeclaredProperties;
 
 //------------------------------------------------------------------------------
@@ -60,6 +61,7 @@
 
 - (BOOL) boolForKey:(NSString*)key;
 - (float) floatForKey:(NSString*)key;
+- (double) doubleForKey:(NSString*)key;
 - (NSInteger) integerForKey:(NSString*)key;
 - (NSNumber*) numberForKey:(NSString*)key;
 - (SEL) selectorForKey:(NSString*)key;
@@ -73,6 +75,7 @@
 
 - (BOOL) boolForGetter:(SEL)getter;
 - (float) floatForGetter:(SEL)getter;
+- (double) doubleForGetter:(SEL)getter;
 - (NSInteger) integerForGetter:(SEL)getter;
 - (NSNumber*) numberForGetter:(SEL)getter;
 - (SEL) selectorForGetter:(SEL)getter;
@@ -86,6 +89,7 @@
 
 - (void) setBool:(BOOL)value forKey:(NSString*)key;
 - (void) setFloat:(float)value forKey:(NSString*)key;
+- (void) setDouble:(double)value forKey:(NSString*)key;
 - (void) setInteger:(NSInteger)value forKey:(NSString*)key;
 - (void) setNumber:(NSNumber*)value forKey:(NSString*)key;
 - (void) setSelector:(SEL)selector forKey:(NSString*)key;
@@ -99,6 +103,7 @@
 
 - (void) setBool:(BOOL)value forSetter:(SEL)setter;
 - (void) setFloat:(float)value forSetter:(SEL)setter;
+- (void) setDouble:(double)value forSetter:(SEL)setter;
 - (void) setInteger:(NSInteger)value forSetter:(SEL)setter;
 - (void) setNumber:(NSNumber*)value forSetter:(SEL)setter;
 - (void) setSelector:(SEL)selector forSetter:(SEL)setter;
@@ -118,7 +123,11 @@
 //------------------------------------------------------------------------------
 
 + (NSArray*) arrayFromArray:(NSArray*)array withClass:(Class)aClass;
+- (NSArray*) arrayWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key;
 - (NSArray*) arrayWithClass:(Class)objectClass forKey:(NSString*)key;
+- (id) objectWithClassNamed:(Class)objectClassName forKey:(NSString*)key fromBlock:(id(^)())fromBlock;
+- (id) objectWithClass:(Class)objectClass forKey:(NSString*)key fromBlock:(id(^)())fromBlock;
+- (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key;
 - (id) objectWithClass:(Class)objectClass forKey:(NSString*)key;
 
 //------------------------------------------------------------------------------
