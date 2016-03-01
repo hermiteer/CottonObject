@@ -447,9 +447,9 @@
     key = [key substringWithRange:range];
 
     // turn the first character into a lower case letter
-    NSString* character = [key substringToIndex:1];
-    key = [key stringByReplacingCharactersInRange:NSMakeRange(0, 1)
-                                       withString:character.lowercaseString];
+    range = NSMakeRange(0, 1);
+    NSString* character = [[key substringToIndex:1] lowercaseString];
+    key = [key stringByReplacingCharactersInRange:range withString:character];
 
     // insert or remove
     [self setObject:object forKey:key];
