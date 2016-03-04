@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.author                = "Christoph"
   s.ios.deployment_target = "5.0"
   s.osx.deployment_target = "10.6"
-  s.source                = { :git => "https://github.com/hermiteer/CottonObject.git", :tag => "v0.0.4" }
+  s.source                = { :git => "https://github.com/hermiteer/CottonObject.git", :tag => "v0.0.5" }
   s.source_files          = "Source/*"
   s.requires_arc          = true
 end
