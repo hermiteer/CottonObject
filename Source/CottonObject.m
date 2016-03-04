@@ -399,7 +399,7 @@
 
 - (void) setUrl:(NSURL*)url forSetter:(SEL)setter
 {
-    [self setObject:url forSetter:setter];
+    [self setObject:url.absoluteString forSetter:setter];
 }
 
 //------------------------------------------------------------------------------
