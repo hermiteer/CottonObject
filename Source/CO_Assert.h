@@ -14,6 +14,9 @@
     #endif
     #define CO_ALog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
 #endif
+
 #define CO_Assert(condition, ...) do { if (!(condition)) { CO_ALog(__VA_ARGS__); }} while(0)
+#define CO_AssertReturn(condition, ...) do { if (!(condition)) { CO_ALog(__VA_ARGS__); return; }} while(0)
+#define CO_AssertReturnNil(condition, ...) do { if (!(condition)) { CO_ALog(__VA_ARGS__); return nil; }} while(0)
 
 #endif

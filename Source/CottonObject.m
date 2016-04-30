@@ -435,12 +435,12 @@
 {
     // key must be at least a 4 character string
     NSString* key = NSStringFromSelector(setter);
-    CO_Assert(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
+    CO_AssertReturn(key.length >= 4, @"Setter '%@' must be at least 4 characters long", key);
 
     // validate it for the form setBlah:
     NSArray* tokens = [key componentsSeparatedByString:@":"];
-    CO_Assert(tokens.count == 2, @"Setter '%@' can only have one argument", key);
-    CO_Assert([key hasPrefix:@"set"], @"Setter '%@' must start with 'set'", key);
+    CO_AssertReturn(tokens.count == 2, @"Setter '%@' can only have one argument", key);
+    CO_AssertReturn([key hasPrefix:@"set"], @"Setter '%@' must start with 'set'", key);
 
     // strip the set and : from the name
     NSRange range = NSMakeRange(3, key.length - 4);
@@ -463,7 +463,7 @@
 {
     // this only supports making arrays of CottonObject subclasses
     // this is what allows parent-child CottonObject classes to be instanced
-    CO_Assert([aClass isMemberOfClass:CottonObject.class] == NO,
+    CO_AssertReturnNil([aClass isMemberOfClass:CottonObject.class] == NO,
               @"Class '%@' must be a subclass of CottonObject",
               NSStringFromClass(aClass));
 
@@ -491,7 +491,7 @@
 - (NSArray*) arrayWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key
 {
     Class class = NSClassFromString(objectClassName);
-    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    CO_AssertReturnNil(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
     return [self arrayWithClass:class forKey:key];
 }
 
@@ -530,7 +530,7 @@
 - (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key fromBlock:(id(^)())fromBlock
 {
     Class class = NSClassFromString(objectClassName);
-    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    CO_AssertReturnNil(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
     return [self objectWithClass:class forKey:key fromBlock:fromBlock];
 }
 
@@ -546,7 +546,7 @@
     // nothing to do if already the desired class
     if (isDesiredClass) { return value; };
     
-    CO_Assert(fromBlock, @"You must implement a non-nil fromBlock to create the instance of the object.");
+    CO_AssertReturnNil(fromBlock, @"You must implement a non-nil fromBlock to create the instance of the object.");
     
     // check if the block was able to create a valid object
     id object = fromBlock();
@@ -570,7 +570,7 @@
 - (id) objectWithClassNamed:(NSString*)objectClassName forKey:(NSString*)key
 {
     Class class = NSClassFromString(objectClassName);
-    CO_Assert(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
+    CO_AssertReturnNil(class, @"The class you are trying to instantiate does not exist: %@", objectClassName);
     return [self objectWithClass:class forKey:key];
 }
 
@@ -592,10 +592,10 @@
     
     // and nothing to do if it is not a dictionary
     BOOL isDictionary = ([value isKindOfClass:NSDictionary.class]);
-    CO_Assert(isDictionary, @"Value for key '%@' is not an NSDictionary", key);
+    CO_AssertReturnNil(isDictionary, @"Value for key '%@' is not an NSDictionary", key);
 
     // ensure we always create an instance of CottonObject
-    CO_Assert([objectClass isSubclassOfClass:CottonObject.class], @"Object you are creating must be a subclass of `CottonObject`");
+    CO_AssertReturnNil([objectClass isSubclassOfClass:CottonObject.class], @"Object you are creating must be a subclass of `CottonObject`");
 
     // make an instance of the class with the confirmed dictionary
     id object = [[objectClass alloc] initWithDictionary:value];
