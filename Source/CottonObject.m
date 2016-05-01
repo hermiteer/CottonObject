@@ -173,32 +173,28 @@
 
 - (BOOL) boolForKey:(NSString*)key
 {
-    NSNumber* boolNumber = [self objectWithClass:NSNumber.class forKey:key];
-    return boolNumber.boolValue;
+    return [self numberForKey:key].boolValue;
 }
 
 //------------------------------------------------------------------------------
 
 - (float) floatForKey:(NSString*)key
 {
-    NSNumber* floatNumber = [self objectWithClass:NSNumber.class forKey:key];
-    return floatNumber.floatValue;
+    return [self numberForKey:key].floatValue;
 }
 
 //------------------------------------------------------------------------------
 
 - (double) doubleForKey:(NSString*)key
 {
-    NSNumber* doubleNumber = [self objectWithClass:NSNumber.class forKey:key];
-    return doubleNumber.doubleValue;
+    return [self numberForKey:key].doubleValue;
 }
 
 //------------------------------------------------------------------------------
 
 - (NSInteger) integerForKey:(NSString*)key
 {
-    NSNumber* integerNumber = [self numberForKey:key];
-    return integerNumber.integerValue;
+    return [self numberForKey:key].integerValue;
 }
 
 //------------------------------------------------------------------------------
@@ -206,21 +202,18 @@
 - (NSNumber*) numberForKey:(NSString*)key
 {
     // already a number
-    NSNumber* number = [self objectWithClass:NSNumber.class forKey:key];
-    if (number != nil)
+    id value = self.dictionary[key];
+    if ([value isKindOfClass:NSNumber.class])
     {
-        return number;
+        return value;
     }
     
     // number from a string
-    NSString* stringValue = [self objectWithClass:NSString.class forKey:key];
-    if (stringValue)
-    {
-        NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
-        number = [formatter numberFromString:stringValue];
-    }
-        
-    // if this far then not a number
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    NSNumber* number = [formatter numberFromString:(NSString *)value];
+
+    [self setObject:number forKey:key];
+
     return number;
 }
 
@@ -590,9 +583,11 @@
     // nothing to do if already the desired class
     if (isDesiredClass) { return value; };
     
-    // and nothing to do if it is not a dictionary
+    // if it is not a dictionary, return value
     BOOL isDictionary = ([value isKindOfClass:NSDictionary.class]);
-    CO_AssertReturnNil(isDictionary, @"Value for key '%@' is not an NSDictionary", key);
+    if (!isDictionary) {
+        return value;
+    }
 
     // ensure we always create an instance of CottonObject
     CO_AssertReturnNil([objectClass isSubclassOfClass:CottonObject.class], @"Object you are creating must be a subclass of `CottonObject`");
